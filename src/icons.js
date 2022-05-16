@@ -1,9 +1,9 @@
-const ReplyIcon = ({ color, width, height }) => {
+const ReplyIcon = () => {
     return (
         <svg
-            fill={color || '#6e767d'}
-            width={width || 24}
-            height={height || 24}
+            fill={'#6e767d'}
+            width={24}
+            height={24}
             viewBox="0 0 24 24"
             aria-hidden="true"
         >
@@ -14,12 +14,12 @@ const ReplyIcon = ({ color, width, height }) => {
     );
 };
 
-const RetweetIcon = ({ color, width, height }) => {
+const RetweetIcon = () => {
     return (
         <svg
-            fill={color || '#6e767d'}
-            width={width || 24}
-            height={height || 24}
+            fill={'#6e767d'}
+            width={24}
+            height={24}
             viewBox="0 0 24 24"
             aria-hidden="true"
         >
@@ -30,12 +30,12 @@ const RetweetIcon = ({ color, width, height }) => {
     );
 };
 
-const LikeIcon = ({ color, width, height }) => {
+const LikeIcon = () => {
     return (
         <svg
-            fill={color || '#6e767d'}
-            width={width || 24}
-            height={height || 24}
+            fill={'#6e767d'}
+            width={24}
+            height={24}
             viewBox="0 0 24 24"
             aria-hidden="true"
         >
@@ -46,12 +46,12 @@ const LikeIcon = ({ color, width, height }) => {
     );
 };
 
-const ShareIcon = ({ color, width, height }) => {
+const ShareIcon = () => {
     return (
         <svg
-            fill={color || '#6e767d'}
-            width={width || 24}
-            height={height || 24}
+            fill={'#6e767d'}
+            width={24}
+            height={24}
             viewBox="0 0 24 24"
             aria-hidden="true"
         >

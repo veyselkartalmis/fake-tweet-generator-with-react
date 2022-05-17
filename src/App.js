@@ -4,6 +4,23 @@ import { ReplyIcon, RetweetIcon, LikeIcon, ShareIcon, VerifiedIcon } from "./ico
 import { AvatarLoader } from "./Loader";
 import { useScreenshot } from "use-react-screenshot";
 
+// Fetch'den alinan resmin screenshotta gorunmesi icin. (Hazır kod)
+function convertImgToBase64(url, callback, outputFormat) {
+    var canvas = document.createElement('CANVAS');
+    var ctx = canvas.getContext('2d');
+    var img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = function() {
+      canvas.height = img.height;
+      canvas.width = img.width;
+      ctx.drawImage(img, 0, 0);
+      var dataURL = canvas.toDataURL(outputFormat || 'image/png');
+      callback.call(this, dataURL);
+      canvas = null;
+    };
+    img.src = url;
+  }
+
 // Tweeti ozel karakterlerden ayirarak link renklendirmesi yapabilmemizi saglayan fonksiyon (regEx)
 const tweetFormat = tweet => {
     tweet = tweet
@@ -52,6 +69,28 @@ export default function App() {
         });
         reader.readAsDataURL(file);    
     }
+
+    // Verilen username'e gore verileri ceken kod
+    const fetchTwitterInfo = () => {
+        fetch(
+          `https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search?q=${userName}`
+        )
+          .then(res => res.json())
+          .then(data => {
+            const twitter = data[0];
+            console.log(twitter);
+    
+            convertImgToBase64(twitter.profile_image_url_https, function(base64Image) {
+              setAvatar(base64Image);
+            });
+    
+            setName(twitter.name);
+            setUserName(twitter.screen_name);
+            setTweet(twitter.status.text);
+            setRetweets(twitter.status.retweet_count);
+            setLikes(twitter.status.favorite_count);
+          });
+      };
 
     return (
         <>
@@ -126,6 +165,15 @@ export default function App() {
                 </ul>
             </div>
             <div className="tweet-container">
+                <div className="fetch-info">
+                    <input
+                        type="text"
+                        value={userName}
+                        placeholder="Twitter kullanıcı adını yazın"
+                        onChange={e => setUserName(e.target.value)}
+                    />
+                    <button onClick={fetchTwitterInfo}>Bilgileri Çek</button>
+                </div>
                 <div className="tweet" ref={ tweetRef }>
                     <div className="tweet-author">
                         {(avatar && <img src={avatar} alt="user" />) || <AvatarLoader />}

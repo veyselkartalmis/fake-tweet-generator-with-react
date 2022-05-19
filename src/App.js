@@ -50,6 +50,8 @@ export default function App() {
     const [isVerified, setIsVerified] = useState(0);
     const [tweet, setTweet] = useState();
     const [avatar, setAvatar] = useState();
+    const [time, setTime] = useState("Tweet Tarihi");
+    const [tweetFrom, setTweetFrom] = useState("Twitter Web App");
     const [retweets, setRetweets] = useState(0);
     const [quoteTweets, setQuoteTweets] = useState(0);
     const [likes, setLikes] = useState(0);
@@ -159,6 +161,24 @@ export default function App() {
                         />
                     </li>
                     <li>
+                        <label>Tweet Tarihi</label>
+                        <input
+                            type="text"
+                            className="input"
+                            value={time}
+                            onChange={e => setTime(e.target.value)}
+                        />
+                    </li>
+                    <li>
+                        <label>Twitt Nereden Atıldı?</label>
+                        <input
+                            type="text"
+                            className="input"
+                            value={tweetFrom}
+                            onChange={e => setTweetFrom(e.target.value)}
+                        />
+                    </li>
+                    <li>
                         <label>Doğrulanmış Hesap</label>
                         <select defaultValue={isVerified}
                             onChange={e => setIsVerified(e.target.value)}
@@ -189,7 +209,7 @@ export default function App() {
                         <div>
                             <div className="name">
                                 {name || "Ad Soyad"}
-                                {isVerified == 1 && <VerifiedIcon width="19" height="19" />}
+                                <span>{isVerified == 1 && <VerifiedIcon width="19" height="19" />}</span>
                             </div>
                             <div className="username">@{userName || "username"}</div>
                         </div>
@@ -202,6 +222,11 @@ export default function App() {
                                 "Bu alana örnek tweet gelecektir."
                         }}
                         />
+                    </div>
+                    <div className="tweet-time">
+                        <span>{time}</span>
+                        <span>•</span>
+                        <span>{tweetFrom}</span>
                     </div>
                     <div className="tweet-stats">
                         <span><b>{formatNumber(retweets)}</b> Retweet</span>

@@ -10,16 +10,16 @@ function convertImgToBase64(url, callback, outputFormat) {
     var ctx = canvas.getContext('2d');
     var img = new Image();
     img.crossOrigin = 'Anonymous';
-    img.onload = function() {
-      canvas.height = img.height;
-      canvas.width = img.width;
-      ctx.drawImage(img, 0, 0);
-      var dataURL = canvas.toDataURL(outputFormat || 'image/png');
-      callback.call(this, dataURL);
-      canvas = null;
+    img.onload = function () {
+        canvas.height = img.height;
+        canvas.width = img.width;
+        ctx.drawImage(img, 0, 0);
+        var dataURL = canvas.toDataURL(outputFormat || 'image/png');
+        callback.call(this, dataURL);
+        canvas = null;
     };
     img.src = url;
-  }
+}
 
 // Tweeti ozel karakterlerden ayirarak link renklendirmesi yapabilmemizi saglayan fonksiyon (regEx)
 const tweetFormat = tweet => {
@@ -33,8 +33,8 @@ const tweetFormat = tweet => {
 
 // Eger istatistikler 1000'den buyuk ise sayıyı parcalamaya yarayan fonksiyon
 const formatNumber = number => {
-    if(!number){number = 0}
-    if(number < 1000) {return number}
+    if (!number) { number = 0 }
+    if (number < 1000) { return number }
     number /= 1000;
     number = String(number).split(".");
     return (
@@ -47,7 +47,7 @@ export default function App() {
     const downloadRef = createRef();
     const [name, setName] = useState();
     const [userName, setUserName] = useState();
-    const [isVerified, setIsVerified] = useState(false);
+    const [isVerified, setIsVerified] = useState(0);
     const [tweet, setTweet] = useState();
     const [avatar, setAvatar] = useState();
     const [retweets, setRetweets] = useState(0);
@@ -57,40 +57,40 @@ export default function App() {
     const getImage = () => takeScreenshot(tweetRef.current);
 
     useEffect(() => {
-        if(image){downloadRef.current.click();}
+        if (image) { downloadRef.current.click(); }
     }, image)
 
     // Yuklenilen resmin profil resmi olmasi icin
     const avatarHandle = (e) => {
         const file = e.target.files[0];
         const reader = new FileReader();
-        reader.addEventListener('load', function(){
+        reader.addEventListener('load', function () {
             setAvatar(this.result);
         });
-        reader.readAsDataURL(file);    
+        reader.readAsDataURL(file);
     }
 
     // Verilen username'e gore verileri ceken kod
     const fetchTwitterInfo = () => {
         fetch(
-          `https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search?q=${userName}`
+            `https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search?q=${userName}`
         )
-          .then(res => res.json())
-          .then(data => {
-            const twitter = data[0];
-            console.log(twitter);
-    
-            convertImgToBase64(twitter.profile_image_url_https, function(base64Image) {
-              setAvatar(base64Image);
+            .then(res => res.json())
+            .then(data => {
+                const twitter = data[0];
+                console.log(twitter);
+
+                convertImgToBase64(twitter.profile_image_url_https, function (base64Image) {
+                    setAvatar(base64Image);
+                });
+
+                setName(twitter.name);
+                setUserName(twitter.screen_name);
+                setTweet(twitter.status.text);
+                setRetweets(twitter.status.retweet_count);
+                setLikes(twitter.status.favorite_count);
             });
-    
-            setName(twitter.name);
-            setUserName(twitter.screen_name);
-            setTweet(twitter.status.text);
-            setRetweets(twitter.status.retweet_count);
-            setLikes(twitter.status.favorite_count);
-          });
-      };
+    };
 
     return (
         <>
@@ -158,6 +158,15 @@ export default function App() {
                             onChange={e => setLikes(e.target.value)}
                         />
                     </li>
+                    <li>
+                        <label>Doğrulanmış Hesap</label>
+                        <select defaultValue={isVerified}
+                            onChange={e => setIsVerified(e.target.value)}
+                        >
+                            <option value="1">Evet</option>
+                            <option value="0">Hayır</option>
+                        </select>
+                    </li>
                     <button onClick={getImage}>Tweeti Oluştur ve İndir</button>
                     <div className="download-url">
                         {image && (<a ref={downloadRef} href={image} download="tweet.png">Tweeti İndir</a>)}
@@ -174,13 +183,13 @@ export default function App() {
                     />
                     <button onClick={fetchTwitterInfo}>Bilgileri Çek</button>
                 </div>
-                <div className="tweet" ref={ tweetRef }>
+                <div className="tweet" ref={tweetRef}>
                     <div className="tweet-author">
                         {(avatar && <img src={avatar} alt="user" />) || <AvatarLoader />}
                         <div>
                             <div className="name">
                                 {name || "Ad Soyad"}
-                                {isVerified && <VerifiedIcon width="19" height="19" />}
+                                {isVerified == 1 && <VerifiedIcon width="19" height="19" />}
                             </div>
                             <div className="username">@{userName || "username"}</div>
                         </div>
